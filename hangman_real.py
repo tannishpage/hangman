@@ -20,9 +20,9 @@ class HangManAI():
 		self._guessed_letters = []
 		self._guess_number = 0
 		self._tick = 0
-		self._alphabets = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
- 						'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 
-						'w', 'x', 'y', 'z']
+		self._vowles = ['a', 'e', 'i', 'o', 'u']
+		self._consonents = ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm',
+						 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z']
 
 
 	def _append_to_dictionary(self, word):
@@ -39,11 +39,28 @@ class HangManAI():
 		"""(dictionary<int, str>)  returns the dictionary for the given length"""
 		return self._analysis_data[length]
 
+	def _analyse_word(self, word):
+		restrictions = {}
+		for n, l in enumerate(guess_word):
+			if l != "-":
+				restrictions[n] = l
+		return restrictions
+
+	def _get_words(self, length):
+		pass
+
+	def _make_freq_dict(self, words):
+		pass
+
+
+	def _get_most_common(self, restrictions={}, length=0):
+		
+
 	def guess(guess_word):
 		"""
 		How Bot guesses:
 			If the first guess or guessing when there weren't any successful 
-			guesses then: guess from the 15 most common letters for the length of
+			guesses then: guess from the most common letters for the length of
 			the word.
 
 			If more then four guesses but still no successful guesses then:
@@ -60,6 +77,9 @@ class HangManAI():
 			After a few guess, if there is only one word left after retrieving 
 			the list, then guess the letters from that word
 
+			After a few guesses, if there are more then one word, continue guessing,
+			if there is still more words and only one letter left, continue guessing.
+
 			if guesses fail at this point, then the word given is unknown, and
 			should just guess based on the most common letters that haven't been
 			guessed yet
@@ -67,16 +87,26 @@ class HangManAI():
 			- guess_word (list<str>): A list containing dashes and correct 
 				guesses
 		"""
-		for l in guess_word:
-			if l != "-":
-				break
-		else:
-			if len(guessed_letters) <= 4:
-				guessed_letters.append(
-					self._get_analysis(len(guess_word))[len(guessed_letters)])
-				return self._get_analysis(len(guess_word))[len(guessed_letters) - 1]
+		restrictions = self._analyse_word(guess_word)
+		if restrictions == {}:
+			if len(self._guessed_letters) <= 4:
+				guess = self._get_analysis(len(guess_word))[len(
+					self._guessed_letters)]
+				self._guessed_letters.append(guess)
+				return guess
 			else:
-				pass
+				picked = False
+				for v in self._vowels:
+					if v not in self._guessed_letters:
+						return v
+		else:
+			most_common = self._get_most_common(restrictions, len(guess_word))
+			if most_common == []:
+				most_common = self._get_most_common()
+			for l in most_common:
+				if l not in self._guessed_letters:
+					return l
+		
 
 
 
