@@ -11,7 +11,6 @@ def get_words(length):
 			else:
 				words.append(x)
 	file.close()
-	print(words)
 	return words
 
 def make_dict(words):
@@ -27,7 +26,6 @@ def make_dict(words):
 def get_three_max(thingo):
 	maxes = []
 	while True:
-		print(thingo)
 		try:
 			maximum = max(thingo.values())
 		except ValueError:
@@ -36,7 +34,7 @@ def get_three_max(thingo):
 			if thingo[y] == maximum:
 				maxes.append(y)
 				break
-		thingo.pop(maxes[len(maxes)-1])3
+		thingo.pop(maxes[len(maxes)-1])
 	return maxes
 
 file = open("analysis.txt", "w")
@@ -45,6 +43,5 @@ for x in range(2, 30):
 	if words == []:
 		break
 	l = make_dict(words)
-	#file.write("{}:{}\n".format(x, ",".join(get_three_max(l))))
+	file.write("{}:{}\n".format(x, ",".join(get_three_max(l))))
 	print(x, ":", ",".join(get_three_max(l)), sep="")
-	#print(words)

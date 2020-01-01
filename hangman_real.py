@@ -12,14 +12,12 @@ class HangManAI():
 
 		Parameters:
 			dictionary_path (str): the path to the word dictionary
-			analysis_data (dictionary<int, list<str>): a dictionary
-				containing the analysis done on word length
+			analysis_data (dictionary<int>, list<str>): a dictionary
+				containing the most common letters for a specified length
 		"""
 		self._dictionary_path = dictionary_path
- 		self._analysis_data = analysis_data
+		self._analysis_data = analysis_data
 		self._guessed_letters = []
-		self._guess_number = 0
-		self._tick = 0
 		self._vowles = ['a', 'e', 'i', 'o', 'u']
 		self._consonents = ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm',
 						 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z']
@@ -39,7 +37,7 @@ class HangManAI():
 		"""(dictionary<int, str>)  returns the dictionary for the given length"""
 		return self._analysis_data[length]
 
-	def _analyse_word(self, word):
+	def _analyse_word(self, guess_word):
 		restrictions = {}
 		for n, l in enumerate(guess_word):
 			if l != "-":
@@ -47,16 +45,57 @@ class HangManAI():
 		return restrictions
 
 	def _get_words(self, length):
-		pass
+		dict_file = open(self._dictionary_path, "r")
+		words = []
+		if length == 0:
+			return dict_file.read().split("\n")
+		for word in dict_file.read().split("\n"):
+			if len(word) == length:
+				words.append(word)
+		return words
 
-	def _make_freq_dict(self, words):
-		pass
+	def _get_letter_freq(self, words):
+		letter_frequency = {}
+		for word in words:
+			for letter in word:
+				if letter in letter_frequency.keys():
+					letter_frequency[letter] = letter_frequency[letter] + 1
+				else:
+					letter_frequency[letter] = 1
+		return letter_frequency
 
+	def _filter_words(self, words, restrictions):
+		filtered = []
+		if restrictions == {}:
+			return words
+		for word in words:
+			for restriction in restrictions.keys():
+				if word[restriction] != restrictions[restriction]:
+					break
+			else:
+				filtered.append(word)
+		return filtered
 
 	def _get_most_common(self, restrictions={}, length=0):
+		words = self._get_words(length)
+		filtered_words = self._filter_words(words, restrictions)
+		letter_freq = self._get_letter_freq(filtered_words)
+		maxes = []
+		while True:
+			try:
+				maximum = max(letter_freq.values())
+			except ValueError:
+				return maxes
+
+			for letter in letter_freq.keys():
+				if letter_freq[letter] == maximum:
+					maxes.append(letter)
+					break
+			letter_freq.pop(maxes[len(maxes)-1])
+		return maxes
 		
 
-	def guess(guess_word):
+	def guess(self, guess_word):
 		"""
 		How Bot guesses:
 			If the first guess or guessing when there weren't any successful 
@@ -95,7 +134,6 @@ class HangManAI():
 				self._guessed_letters.append(guess)
 				return guess
 			else:
-				picked = False
 				for v in self._vowels:
 					if v not in self._guessed_letters:
 						return v
@@ -105,9 +143,37 @@ class HangManAI():
 				most_common = self._get_most_common()
 			for l in most_common:
 				if l not in self._guessed_letters:
+					self._guessed_letters.append(l)
 					return l
-		
 
+def convert_to_dict():
+	f = open("analysis.txt", "r")
+	d = {}
+	for x in f.readlines():
+		y = x.rstrip().split(":")
+		a = y[0]
+		b = y[1]
+		d[int(a)] = b.split(",")
+	return d
+
+def main():
+	length = int(input("What is word length? "))
+	guess_word = ["-" for x in range(0, length)]
+	d = convert_to_dict()
+	hb = HangManAI("words_alpha.txt", d)
+	for x in range(0, 10):
+		print(guess_word)
+		g = hb.guess(guess_word)
+		i = input("Is {} in the word?".format(g))
+		if i == "y":
+			indexs = input("Where? ").split(",")
+			for index in indexs:
+				print(index)
+				guess_word[int(index)] = g
+				print(guess_word)
+
+if __name__ == "__main__":
+	main()
 
 
 
