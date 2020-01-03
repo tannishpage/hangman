@@ -1,7 +1,7 @@
 import os
 def get_words(length):
 	file = open("words_alpha.txt", 'r')
-	restriction = {}
+	restriction = {} #{0:"l", 1:"o", 3:"e"}
 	words = []
 	for x in file.read().split("\n"):
 		if len(x) == length:
@@ -42,6 +42,7 @@ for x in range(2, 30):
 	words = get_words(x)
 	if words == []:
 		break
+	print(words)
 	l = make_dict(words)
 	file.write("{}:{}\n".format(x, ",".join(get_three_max(l))))
 	print(x, ":", ",".join(get_three_max(l)), sep="")
