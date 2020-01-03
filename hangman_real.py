@@ -2,9 +2,6 @@ import os
 import random
 
 class HangManAI():
-	"""
-	"""
-
 	def __init__(self, dictionary_path, analysis_data):
 		"""
 		Initializing the hangman bot with the path to the word dictionary, and
@@ -26,14 +23,14 @@ class HangManAI():
 		self._most_common = self._get_most_common()
 
 
-	def _append_to_dictionary(self, word):
+	def append_to_dictionary(self, word):
 		"""
 		Adds the given word to the dictionary
 		Parameters:
 			word (str) : the word to add to the dictionary
 		"""
-		dict_file = open(self._dictionary_path, "ab")
-		dict_file.write(bytes("{}\n".format(word).encode("utf-8")))
+		dict_file = open(self._dictionary_path, "a")
+		dict_file.write("\n{}".format(word))
 		dict_file.close()
 
 	def _get_analysis(self, length):
@@ -200,6 +197,17 @@ def main():
 		else:
 			chances -= 1
 		tries += 1
+	else:
+		print("Failed to guess the word.")
+		word = input("What is the word? ").lower()
+		f = open("words_alpha.txt", 'r')
+		for w in f.read().split("\n"):
+			if word == w:
+				print("This word is in my dictionary")
+				break
+		else:
+			print("This word isn't in my dictionary, I'm going to add it")
+			hb.append_to_dictionary(word)
 
 if __name__ == "__main__":
 	main()
