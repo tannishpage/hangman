@@ -153,7 +153,6 @@ class HangManAI():
 					self._can_guess_consonents = False
 		else:
 			most_common = self._get_most_common(restrictions, len(guess_word))
-			print(most_common)
 			if most_common == []:
 				most_common = self._most_common
 			while True:
