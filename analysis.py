@@ -1,6 +1,6 @@
 import os
 def get_words(length):
-	file = open("words_alpha.txt", 'r')
+	file = open("3kwordlist.txt", 'r')
 	restriction = {} #{0:"l", 1:"o", 3:"e"}
 	words = []
 	for x in file.read().split("\n"):

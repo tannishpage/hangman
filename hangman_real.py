@@ -155,6 +155,7 @@ class HangManAI():
 			most_common = self._get_most_common(restrictions, len(guess_word))
 			if most_common == []:
 				most_common = self._most_common
+			print(most_common)
 			while True:
 				for l in most_common:
 					if l not in self._guessed_letters:
