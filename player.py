@@ -35,7 +35,7 @@ def main():
 				tries))
 			break
 		g = hb.guess(guess_word)
-		print("My guess:", g)
+		print("Bot's Guess:", g)
 		indexes = get_indexes(g, the_word)
 		if indexes != []:
 			for index in indexes:

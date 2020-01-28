@@ -20,8 +20,9 @@ class HangManAI():
 		self._consonents = ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm',
 						 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z']
 		self._can_guess_consonents = True
+		self._words = []
 		self._most_common = self._get_most_common()
-
+		self._words = []
 
 	def append_to_dictionary(self, word):
 		"""
@@ -38,7 +39,7 @@ class HangManAI():
 		try:
 			return self._analysis_data[length]
 		except KeyError:
-			return self._get_most_common()
+			return self._most_common
 
 	def _analyse_word(self, guess_word):
 		"""(dictionary<int, str>) returns the restrictions"""
@@ -70,11 +71,11 @@ class HangManAI():
 					letter_frequency[letter] = 1
 		return letter_frequency
 
-	def _filter_words(self, words, restrictions):
+	def _filter_words(self, restrictions):
 		filtered = []
 		if restrictions == {}:
-			return words
-		for word in words:
+			return self._words
+		for word in self._words:
 			for restriction in restrictions.keys():
 				if word[restriction] != restrictions[restriction]:
 					break
@@ -83,8 +84,9 @@ class HangManAI():
 		return filtered
 
 	def _get_most_common(self, restrictions={}, length=0):
-		words = self._get_words(length)
-		filtered_words = self._filter_words(words, restrictions)
+		if self._words == []:
+			self._words = self._get_words(length)
+		filtered_words = self._filter_words(restrictions)
 		letter_freq = self._get_letter_freq(filtered_words)
 		maxes = []
 		while True:
@@ -99,7 +101,12 @@ class HangManAI():
 					break
 			letter_freq.pop(maxes[len(maxes)-1])
 		return maxes
-		
+
+	def reset(self):
+		self._guessed_letters = []
+		self._can_guess_vowles = True
+		self._can_guess_consonents = True
+		self._words = []
 
 	def guess(self, guess_word):
 		"""
@@ -155,7 +162,6 @@ class HangManAI():
 			most_common = self._get_most_common(restrictions, len(guess_word))
 			if most_common == []:
 				most_common = self._most_common
-			print(most_common)
 			while True:
 				for l in most_common:
 					if l not in self._guessed_letters:
